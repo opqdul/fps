@@ -132,8 +132,8 @@ var _damage_snd: AudioStreamPlayer3D
 
 func _ready() -> void:
 	_home = global_position
-	name_tag.visible = Net.role != Net.Role.SOLO and not is_multiplayer_authority()
-	if is_multiplayer_authority():
+	name_tag.visible = Net.role != Net.Role.SOLO and not _is_owned()
+	if _is_owned():
 		camera.current = true
 		if DisplayServer.get_name() != "headless":
 			Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
@@ -243,9 +243,16 @@ func _unhandled_input(event: InputEvent) -> void:
 	elif event.is_action_pressed("weapon_3"):
 		_select_weapon(2)
 
+func _is_owned() -> bool:
+	# is_multiplayer_authority() errors in export templates when no peer is
+	# assigned (solo), so decide ownership ourselves.
+	if multiplayer.multiplayer_peer == null:
+		return true # solo: the only player is ours
+	return get_multiplayer_authority() == multiplayer.get_unique_id()
+
 func _physics_process(delta: float) -> void:
 	# Remote copies don't move themselves; they follow sync_pos.
-	if not is_multiplayer_authority():
+	if not _is_owned():
 		_remote_process(delta)
 		return
 	if _dead:

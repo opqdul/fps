@@ -89,8 +89,14 @@ func reset() -> void:
 
 ## The player node this machine controls, or null.
 func get_local_player() -> Node:
+	# Solo has no peer: the first (only) player is ours.
+	if multiplayer.multiplayer_peer == null:
+		for p in get_tree().get_nodes_in_group("player"):
+			return p
+		return null
+	var my_id := multiplayer.get_unique_id()
 	for p in get_tree().get_nodes_in_group("player"):
-		if p.is_multiplayer_authority():
+		if p.get_multiplayer_authority() == my_id:
 			return p
 	return null
 
