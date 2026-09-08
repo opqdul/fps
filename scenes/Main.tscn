@@ -1,0 +1,442 @@
+[gd_scene load_steps=30 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/Player.tscn" id="1_player"]
+[ext_resource type="Script" path="res://scripts/target.gd" id="2_target"]
+[ext_resource type="PackedScene" path="res://scenes/PauseMenu.tscn" id="3_pause"]
+[ext_resource type="Script" path="res://scripts/hud.gd" id="4_hud"]
+[ext_resource type="Script" path="res://scripts/game.gd" id="5_game"]
+[ext_resource type="Script" path="res://scripts/scoreboard.gd" id="6_board"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProcSkyMat"]
+sky_top_color = Color(0.3, 0.5, 0.9, 1)
+sky_horizon_color = Color(0.7, 0.8, 1, 1)
+ground_bottom_color = Color(0.15, 0.2, 0.3, 1)
+ground_horizon_color = Color(0.6, 0.7, 0.9, 1)
+
+[sub_resource type="Sky" id="Sky"]
+sky_material = SubResource("ProcSkyMat")
+
+[sub_resource type="Environment" id="Env"]
+background_mode = 2
+sky = SubResource("Sky")
+fog_enabled = true
+fog_light_color = Color(0.62, 0.7, 0.88, 1)
+fog_density = 0.012
+
+[sub_resource type="BoxMesh" id="GroundMesh"]
+size = Vector3(60, 1, 60)
+
+[sub_resource type="BoxShape3D" id="GroundShape"]
+size = Vector3(60, 1, 60)
+
+[sub_resource type="BoxMesh" id="WallMesh"]
+size = Vector3(60, 3, 0.5)
+
+[sub_resource type="BoxShape3D" id="WallShape"]
+size = Vector3(60, 3, 0.5)
+
+[sub_resource type="BoxMesh" id="CrateMesh"]
+size = Vector3(2, 2, 2)
+
+[sub_resource type="BoxShape3D" id="CrateShape"]
+size = Vector3(2, 2, 2)
+
+[sub_resource type="BoxMesh" id="TargetMesh"]
+size = Vector3(1, 1, 1)
+
+[sub_resource type="BoxShape3D" id="TargetShape"]
+size = Vector3(1, 1, 1)
+
+[sub_resource type="BoxMesh" id="PillarMesh"]
+size = Vector3(1, 5, 1)
+
+[sub_resource type="BoxShape3D" id="PillarShape"]
+size = Vector3(1, 5, 1)
+
+[sub_resource type="BoxMesh" id="RampMesh"]
+size = Vector3(8, 0.3, 4)
+
+[sub_resource type="BoxShape3D" id="RampShape"]
+size = Vector3(8, 0.3, 4)
+
+[sub_resource type="BoxMesh" id="AccentMesh"]
+size = Vector3(8, 0.03, 0.3)
+
+[sub_resource type="StandardMaterial3D" id="GroundMat"]
+albedo_color = Color(0.33, 0.34, 0.36, 1)
+roughness = 0.9
+
+[sub_resource type="StandardMaterial3D" id="WallMat"]
+albedo_color = Color(0.42, 0.47, 0.58, 1)
+roughness = 0.7
+
+[sub_resource type="StandardMaterial3D" id="CrateMat"]
+albedo_color = Color(0.8, 0.35, 0.15, 1)
+roughness = 0.6
+
+[sub_resource type="StandardMaterial3D" id="AccentMat"]
+albedo_color = Color(1, 0.85, 0.3, 1)
+emission_enabled = true
+emission = Color(1, 0.8, 0.2, 0.6)
+emission_energy_multiplier = 0.4
+
+[sub_resource type="StyleBoxFlat" id="HPBg"]
+bg_color = Color(0, 0, 0, 0.4)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id="HPFill"]
+bg_color = Color(0.25, 0.6, 0.3, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id="BoardPanel"]
+bg_color = Color(0.06, 0.08, 0.12, 0.92)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+content_margin_left = 24.0
+content_margin_top = 16.0
+content_margin_right = 24.0
+content_margin_bottom = 16.0
+
+[node name="Main" type="Node3D"]
+script = ExtResource("5_game")
+
+[node name="Players" type="Node3D" parent="."]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Env")
+
+[node name="Sun" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.7071, 0.7071, 0, -0.7071, 0.7071, 0, 10, 0)
+shadow_enabled = true
+
+[node name="Ground" type="StaticBody3D" parent="."]
+
+[node name="Mesh" type="MeshInstance3D" parent="Ground"]
+mesh = SubResource("GroundMesh")
+surface_material_override/0 = SubResource("GroundMat")
+
+[node name="Collision" type="CollisionShape3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+shape = SubResource("GroundShape")
+
+[node name="WallBack" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, -30)
+
+[node name="Mesh" type="MeshInstance3D" parent="WallBack"]
+mesh = SubResource("WallMesh")
+surface_material_override/0 = SubResource("WallMat")
+
+[node name="Collision" type="CollisionShape3D" parent="WallBack"]
+shape = SubResource("WallShape")
+
+[node name="WallFront" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 30)
+
+[node name="Mesh" type="MeshInstance3D" parent="WallFront"]
+mesh = SubResource("WallMesh")
+surface_material_override/0 = SubResource("WallMat")
+
+[node name="Collision" type="CollisionShape3D" parent="WallFront"]
+shape = SubResource("WallShape")
+
+[node name="WallLeft" type="StaticBody3D" parent="."]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -30, 1.5, 0)
+
+[node name="Mesh" type="MeshInstance3D" parent="WallLeft"]
+mesh = SubResource("WallMesh")
+surface_material_override/0 = SubResource("WallMat")
+
+[node name="Collision" type="CollisionShape3D" parent="WallLeft"]
+shape = SubResource("WallShape")
+
+[node name="WallRight" type="StaticBody3D" parent="."]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 30, 1.5, 0)
+
+[node name="Mesh" type="MeshInstance3D" parent="WallRight"]
+mesh = SubResource("WallMesh")
+surface_material_override/0 = SubResource("WallMat")
+
+[node name="Collision" type="CollisionShape3D" parent="WallRight"]
+shape = SubResource("WallShape")
+
+[node name="Crate1" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 1, -5)
+
+[node name="Mesh" type="MeshInstance3D" parent="Crate1"]
+mesh = SubResource("CrateMesh")
+surface_material_override/0 = SubResource("CrateMat")
+
+[node name="Collision" type="CollisionShape3D" parent="Crate1"]
+shape = SubResource("CrateShape")
+
+[node name="Crate2" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 1, -8)
+
+[node name="Mesh" type="MeshInstance3D" parent="Crate2"]
+mesh = SubResource("CrateMesh")
+surface_material_override/0 = SubResource("CrateMat")
+
+[node name="Collision" type="CollisionShape3D" parent="Crate2"]
+shape = SubResource("CrateShape")
+
+[node name="Crate3" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 1, -12)
+
+[node name="Mesh" type="MeshInstance3D" parent="Crate3"]
+mesh = SubResource("CrateMesh")
+surface_material_override/0 = SubResource("CrateMat")
+
+[node name="Collision" type="CollisionShape3D" parent="Crate3"]
+shape = SubResource("CrateShape")
+
+[node name="Pillar1" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 2.5, -10)
+
+[node name="Mesh" type="MeshInstance3D" parent="Pillar1"]
+mesh = SubResource("PillarMesh")
+surface_material_override/0 = SubResource("WallMat")
+
+[node name="Collision" type="CollisionShape3D" parent="Pillar1"]
+shape = SubResource("PillarShape")
+
+[node name="Pillar2" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 2.5, -10)
+
+[node name="Mesh" type="MeshInstance3D" parent="Pillar2"]
+mesh = SubResource("PillarMesh")
+surface_material_override/0 = SubResource("WallMat")
+
+[node name="Collision" type="CollisionShape3D" parent="Pillar2"]
+shape = SubResource("PillarShape")
+
+[node name="Pillar3" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 2.5, 10)
+
+[node name="Mesh" type="MeshInstance3D" parent="Pillar3"]
+mesh = SubResource("PillarMesh")
+surface_material_override/0 = SubResource("WallMat")
+
+[node name="Collision" type="CollisionShape3D" parent="Pillar3"]
+shape = SubResource("PillarShape")
+
+[node name="Pillar4" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 2.5, 10)
+
+[node name="Mesh" type="MeshInstance3D" parent="Pillar4"]
+mesh = SubResource("PillarMesh")
+surface_material_override/0 = SubResource("WallMat")
+
+[node name="Collision" type="CollisionShape3D" parent="Pillar4"]
+shape = SubResource("PillarShape")
+
+[node name="Ramp1" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.98, 0.199, 0, -0.199, 0.98, 0, 0.9, -14)
+
+[node name="Mesh" type="MeshInstance3D" parent="Ramp1"]
+mesh = SubResource("RampMesh")
+surface_material_override/0 = SubResource("CrateMat")
+
+[node name="Collision" type="CollisionShape3D" parent="Ramp1"]
+shape = SubResource("RampShape")
+
+[node name="Ramp2" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.98, -0.199, 0, 0.199, 0.98, 0, 0.9, 14)
+
+[node name="Mesh" type="MeshInstance3D" parent="Ramp2"]
+mesh = SubResource("RampMesh")
+surface_material_override/0 = SubResource("CrateMat")
+
+[node name="Collision" type="CollisionShape3D" parent="Ramp2"]
+shape = SubResource("RampShape")
+
+[node name="Accent1" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 0.02, 6)
+mesh = SubResource("AccentMesh")
+surface_material_override/0 = SubResource("AccentMat")
+
+[node name="Accent2" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 0.02, 6)
+mesh = SubResource("AccentMesh")
+surface_material_override/0 = SubResource("AccentMat")
+
+[node name="Accent3" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 0.02, -6)
+mesh = SubResource("AccentMesh")
+surface_material_override/0 = SubResource("AccentMat")
+
+[node name="Accent4" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 0.02, -6)
+mesh = SubResource("AccentMesh")
+surface_material_override/0 = SubResource("AccentMat")
+
+[node name="Target1" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 0.5, -16)
+collision_layer = 2
+collision_mask = 1
+target_id = 1
+script = ExtResource("2_target")
+
+[node name="Mesh" type="MeshInstance3D" parent="Target1"]
+mesh = SubResource("TargetMesh")
+
+[node name="Collision" type="CollisionShape3D" parent="Target1"]
+shape = SubResource("TargetShape")
+
+[node name="Target2" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, -20)
+collision_layer = 2
+collision_mask = 1
+target_id = 2
+script = ExtResource("2_target")
+
+[node name="Mesh" type="MeshInstance3D" parent="Target2"]
+mesh = SubResource("TargetMesh")
+
+[node name="Collision" type="CollisionShape3D" parent="Target2"]
+shape = SubResource("TargetShape")
+
+[node name="Target3" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 0.5, -18)
+collision_layer = 2
+collision_mask = 1
+target_id = 3
+script = ExtResource("2_target")
+
+[node name="Mesh" type="MeshInstance3D" parent="Target3"]
+mesh = SubResource("TargetMesh")
+
+[node name="Collision" type="CollisionShape3D" parent="Target3"]
+shape = SubResource("TargetShape")
+
+[node name="Player" parent="." instance=ExtResource("1_player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, 2)
+
+[node name="HUD" type="CanvasLayer" parent="."]
+script = ExtResource("4_hud")
+
+[node name="AmmoLabel" type="Label" parent="HUD"]
+layout_mode = 3
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_top = -52.0
+offset_right = 240.0
+offset_bottom = -16.0
+grow_vertical = 0
+theme_override_font_sizes/font_size = 24
+text = "AMMO 12 / 12"
+
+[node name="HealthBar" type="ProgressBar" parent="HUD"]
+layout_mode = 3
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_top = -88.0
+offset_right = 260.0
+offset_bottom = -70.0
+grow_vertical = 0
+max_value = 100.0
+value = 100.0
+show_percentage = false
+theme_override_styles/background = SubResource("HPBg")
+theme_override_styles/fill = SubResource("HPFill")
+
+[node name="HealthLabel" type="Label" parent="HUD"]
+layout_mode = 3
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 268.0
+offset_top = -88.0
+offset_right = 340.0
+offset_bottom = -70.0
+grow_vertical = 0
+theme_override_font_sizes/font_size = 18
+text = "100"
+
+[node name="BloodOverlay" type="ColorRect" parent="HUD"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.5, 0.02, 0.02, 0)
+
+[node name="ConnLabel" type="Label" parent="HUD"]
+visible = false
+layout_mode = 3
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -560.0
+offset_top = 16.0
+offset_right = -16.0
+offset_bottom = 56.0
+grow_horizontal = 0
+horizontal_alignment = 2
+theme_override_colors/font_color = Color(1, 0.45, 0.35, 1)
+theme_override_font_sizes/font_size = 22
+text = ""
+
+[node name="Crosshair" type="ColorRect" parent="HUD"]
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -2.0
+offset_top = -2.0
+offset_right = 2.0
+offset_bottom = 2.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(1, 1, 1, 0.9)
+
+[node name="PauseMenu" parent="." instance=ExtResource("3_pause")]
+
+[node name="Scoreboard" type="CanvasLayer" parent="."]
+visible = false
+script = ExtResource("6_board")
+
+[node name="Center" type="CenterContainer" parent="Scoreboard"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="PanelContainer" parent="Scoreboard/Center"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("BoardPanel")
+
+[node name="VBox" type="VBoxContainer" parent="Scoreboard/Center/Panel"]
+layout_mode = 2
+custom_minimum_size = Vector2(420, 0)
+
+[node name="Title" type="Label" parent="Scoreboard/Center/Panel/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "PLAYERS"
+
+[node name="List" type="VBoxContainer" parent="Scoreboard/Center/Panel/VBox"]
+layout_mode = 2
+
+[node name="Hint" type="Label" parent="Scoreboard/Center/Panel/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "Hold TAB to view players"

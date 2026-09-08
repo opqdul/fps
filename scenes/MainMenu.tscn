@@ -1,0 +1,196 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/main_menu.gd" id="1_menu"]
+
+[sub_resource type="Gradient" id="Grad"]
+colors = PackedColorArray(0.09, 0.12, 0.2, 1, 0.04, 0.05, 0.09, 1)
+offsets = PackedFloat32Array(0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradTex"]
+gradient = SubResource("Grad")
+fill_from = Vector2(0.5, 0)
+fill_to = Vector2(0.5, 1)
+
+[sub_resource type="StyleBoxFlat" id="PanelStyle"]
+bg_color = Color(0.08, 0.1, 0.15, 0.95)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+content_margin_left = 32.0
+content_margin_top = 24.0
+content_margin_right = 32.0
+content_margin_bottom = 24.0
+
+[node name="MainMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_menu")
+
+[node name="Background" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("GradTex")
+
+[node name="SplashBox" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBox" type="VBoxContainer" parent="SplashBox"]
+layout_mode = 2
+alignment = 1
+
+[node name="SplashTitle" type="Label" parent="SplashBox/VBox"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_color = Color(0.95, 0.85, 0.55, 1)
+theme_override_font_sizes/font_size = 96
+text = "FPS"
+
+[node name="SplashSub" type="Label" parent="SplashBox/VBox"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_color = Color(0.6, 0.65, 0.75, 1)
+theme_override_font_sizes/font_size = 22
+text = "A GODOT ENGINE FPS"
+
+[node name="Center" type="CenterContainer" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBox" type="VBoxContainer" parent="Center"]
+layout_mode = 2
+alignment = 1
+
+[node name="Title" type="Label" parent="Center/VBox"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_color = Color(0.95, 0.85, 0.55, 1)
+theme_override_font_sizes/font_size = 76
+text = "FPS"
+
+[node name="Subtitle" type="Label" parent="Center/VBox"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_color = Color(0.55, 0.6, 0.7, 1)
+theme_override_font_sizes/font_size = 18
+text = "WASD  MOUSE  SHIFT SPRINT  1-2-3 WEAPONS  R RELOAD  ESC PAUSE  TAB SCORE"
+
+[node name="Spacer" type="Control" parent="Center/VBox"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 56)
+
+[node name="PlayButton" type="Button" parent="Center/VBox"]
+custom_minimum_size = Vector2(280, 46)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 22
+text = "PLAY SOLO"
+
+[node name="ServersButton" type="Button" parent="Center/VBox"]
+custom_minimum_size = Vector2(280, 46)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 22
+text = "MULTIPLAYER"
+
+[node name="QuitButton" type="Button" parent="Center/VBox"]
+custom_minimum_size = Vector2(280, 46)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 22
+text = "QUIT"
+
+[node name="Spacer2" type="Control" parent="Center/VBox"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 32)
+
+[node name="Version" type="Label" parent="Center/VBox"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_color = Color(0.4, 0.45, 0.55, 1)
+theme_override_font_sizes/font_size = 14
+text = "v0.1 — a tiny FPS"
+
+[node name="ServersBox" type="CenterContainer" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="PanelContainer" parent="ServersBox"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("PanelStyle")
+
+[node name="VBox" type="VBoxContainer" parent="ServersBox/Panel"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="ServersBox/Panel/VBox"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_color = Color(0.95, 0.85, 0.55, 1)
+theme_override_font_sizes/font_size = 34
+text = "MULTIPLAYER"
+
+[node name="ServerList" type="ItemList" parent="ServersBox/Panel/VBox"]
+layout_mode = 2
+size_flags_horizontal = 4
+custom_minimum_size = Vector2(440, 170)
+
+[node name="StatusLabel" type="Label" parent="ServersBox/Panel/VBox"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_color = Color(0.55, 0.6, 0.7, 1)
+text = "Press Refresh to look for LAN servers."
+
+[node name="RefreshButton" type="Button" parent="ServersBox/Panel/VBox"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Refresh"
+
+[node name="JoinEdit" type="LineEdit" parent="ServersBox/Panel/VBox"]
+layout_mode = 2
+size_flags_horizontal = 4
+custom_minimum_size = Vector2(440, 0)
+placeholder_text = "server ip:port  (e.g. 8.8.8.8:9999)"
+
+[node name="ConnectButton" type="Button" parent="ServersBox/Panel/VBox"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Connect"
+
+[node name="BackButton" type="Button" parent="ServersBox/Panel/VBox"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Back"
+
+[connection signal="pressed" from="Center/VBox/PlayButton" to="." method="_on_play_pressed"]
+[connection signal="pressed" from="Center/VBox/ServersButton" to="." method="_on_servers_pressed"]
+[connection signal="pressed" from="Center/VBox/QuitButton" to="." method="_on_quit_pressed"]
+[connection signal="pressed" from="ServersBox/Panel/VBox/RefreshButton" to="." method="_refresh_servers"]
+[connection signal="item_activated" from="ServersBox/Panel/VBox/ServerList" to="." method="_on_server_item_activated"]
+[connection signal="pressed" from="ServersBox/Panel/VBox/ConnectButton" to="." method="_on_connect_pressed"]
+[connection signal="pressed" from="ServersBox/Panel/VBox/BackButton" to="." method="_on_back_pressed"]

@@ -1,0 +1,41 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://scripts/weapon.gd" id="1_weapon"]
+
+[sub_resource type="BoxMesh" id="KnifeHandleMesh"]
+size = Vector3(0.04, 0.05, 0.14)
+
+[sub_resource type="BoxMesh" id="KnifeBladeMesh"]
+size = Vector3(0.012, 0.04, 0.3)
+
+[sub_resource type="StandardMaterial3D" id="KnifeHandleMat"]
+albedo_color = Color(0.1, 0.09, 0.09, 1)
+
+[sub_resource type="StandardMaterial3D" id="KnifeBladeMat"]
+albedo_color = Color(0.75, 0.78, 0.82, 1)
+metallic = 1.0
+roughness = 0.25
+
+[node name="Knife" type="Node3D"]
+script = ExtResource("1_weapon")
+display_name = "KNIFE"
+mag_size = 0
+reload_time = 0.0
+melee = true
+fire_cooldown = 0.45
+recoil = 0.0
+
+[node name="Handle" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.08)
+cast_shadow = 0
+mesh = SubResource("KnifeHandleMesh")
+surface_material_override/0 = SubResource("KnifeHandleMat")
+
+[node name="Blade" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.015, -0.28)
+cast_shadow = 0
+mesh = SubResource("KnifeBladeMesh")
+surface_material_override/0 = SubResource("KnifeBladeMat")
+
+[node name="Muzzle" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.015, -0.4)

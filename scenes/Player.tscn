@@ -1,0 +1,108 @@
+[gd_scene load_steps=13 format=3]
+
+[ext_resource type="Script" path="res://scripts/player.gd" id="1_player"]
+[ext_resource type="PackedScene" path="res://scenes/weapons/Rifle.tscn" id="2_rifle"]
+[ext_resource type="PackedScene" path="res://scenes/weapons/Pistol.tscn" id="3_pistol"]
+[ext_resource type="PackedScene" path="res://scenes/weapons/Knife.tscn" id="4_knife"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_1"]
+radius = 0.4
+height = 1.8
+
+[sub_resource type="BoxMesh" id="LegMesh"]
+size = Vector3(0.17, 0.78, 0.2)
+
+[sub_resource type="BoxMesh" id="ShoeMesh"]
+size = Vector3(0.18, 0.12, 0.3)
+
+[sub_resource type="BoxMesh" id="TorsoMesh"]
+size = Vector3(0.34, 0.42, 0.2)
+
+[sub_resource type="BoxMesh" id="ShoulderMesh"]
+size = Vector3(0.42, 0.12, 0.2)
+
+[sub_resource type="StandardMaterial3D" id="PantsMat"]
+albedo_color = Color(0.16, 0.19, 0.28, 1)
+
+[sub_resource type="StandardMaterial3D" id="ShoeMat"]
+albedo_color = Color(0.12, 0.12, 0.12, 1)
+
+[sub_resource type="StandardMaterial3D" id="CoatMat"]
+albedo_color = Color(0.22, 0.27, 0.32, 1)
+
+[node name="Player" type="CharacterBody3D" groups=["player"]]
+collision_mask = 3
+script = ExtResource("1_player")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+shape = SubResource("CapsuleShape3D_1")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, 0)
+current = false
+
+[node name="Weapons" type="Node3D" parent="Camera3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.35, -0.32, -0.55)
+
+[node name="Rifle" parent="Camera3D/Weapons" instance=ExtResource("2_rifle")]
+
+[node name="Pistol" parent="Camera3D/Weapons" instance=ExtResource("3_pistol")]
+visible = false
+
+[node name="Knife" parent="Camera3D/Weapons" instance=ExtResource("4_knife")]
+visible = false
+
+[node name="MuzzleFlash" type="OmniLight3D" parent="Camera3D/Weapons"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.015, -0.55)
+light_color = Color(1, 0.85, 0.5, 1)
+light_energy = 0.0
+omni_range = 3.0
+
+[node name="Body" type="Node3D" parent="."]
+
+[node name="Torso" type="MeshInstance3D" parent="Body"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1, 0)
+mesh = SubResource("TorsoMesh")
+surface_material_override/0 = SubResource("CoatMat")
+
+[node name="Shoulders" type="MeshInstance3D" parent="Body"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.36, 0)
+mesh = SubResource("ShoulderMesh")
+surface_material_override/0 = SubResource("CoatMat")
+
+[node name="LegL" type="Node3D" parent="Body"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.11, 0.9, 0)
+
+[node name="Upper" type="MeshInstance3D" parent="Body/LegL"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.39, 0)
+mesh = SubResource("LegMesh")
+surface_material_override/0 = SubResource("PantsMat")
+
+[node name="Shoe" type="MeshInstance3D" parent="Body/LegL"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.78, -0.04)
+mesh = SubResource("ShoeMesh")
+surface_material_override/0 = SubResource("ShoeMat")
+
+[node name="LegR" type="Node3D" parent="Body"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.11, 0.9, 0)
+
+[node name="Upper" type="MeshInstance3D" parent="Body/LegR"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.39, 0)
+mesh = SubResource("LegMesh")
+surface_material_override/0 = SubResource("PantsMat")
+
+[node name="Shoe" type="MeshInstance3D" parent="Body/LegR"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.78, -0.04)
+mesh = SubResource("ShoeMesh")
+surface_material_override/0 = SubResource("ShoeMat")
+
+[node name="NameTag" type="Label3D" parent="."]
+visible = false
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.15, 0)
+billboard = 1
+no_depth_test = true
+font_size = 64
+outline_size = 16
+outline_modulate = Color(0, 0, 0, 1)
+text = "Player"

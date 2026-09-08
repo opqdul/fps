@@ -1,0 +1,24 @@
+# Godot 4
+.godot/
+/android/
+
+# Godot import sidecars (regenerated automatically)
+*.import
+
+# Export builds
+build/
+exports/
+*.pck
+*.zip
+*.exe
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+desktop.ini
+*.tmp
+
+# IDE
+.vscode/
+.idea/
+*.code-workspace
