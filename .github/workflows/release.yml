@@ -28,7 +28,19 @@ jobs:
 
       - name: Export Windows build
         run: |
-          & "godot\Godot_v4.7.2-stable_win64.exe" --headless --path . --export-release "Windows Desktop" build/FPS_v4.7.2.exe
+          # Godot is a GUI-subsystem exe: Start-Process -Wait keeps the step
+          # synchronous, otherwise PowerShell returns before the export finishes.
+          $p = Start-Process -FilePath "godot\Godot_v4.7.2-stable_win64.exe" `
+            -ArgumentList "--headless", "--path", ".", "--export-release", "Windows Desktop", "build/FPS_v4.7.2.exe" `
+            -Wait -PassThru -NoNewWindow
+          if ($p.ExitCode -ne 0) {
+            Write-Error "Export failed with exit code $($p.ExitCode)"
+            exit 1
+          }
+          if (-not (Test-Path "build/FPS_v4.7.2.exe")) {
+            Write-Error "Export did not produce build/FPS_v4.7.2.exe"
+            exit 1
+          }
 
       - name: Upload to release
         uses: softprops/action-gh-release@v2
