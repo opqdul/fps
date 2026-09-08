@@ -42,9 +42,3 @@ godot --headless --path . -- --server --name="My Server"
 
 Clients find the server through LAN discovery in multiplayer menu, or connect
 directly by typing the IP and port (default 9999).
-
-## Build and releases
-
-Pushing a tag starting with `v` (for example `v1.0.0`) triggers the GitHub
-Actions workflow `.github/workflows/release.yml`, which exports a Windows
-build and attaches it to the release.

@@ -17,8 +17,3 @@ exports/
 Thumbs.db
 desktop.ini
 *.tmp
-
-# IDE
-.vscode/
-.idea/
-*.code-workspace
