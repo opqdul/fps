@@ -28,6 +28,8 @@ jobs:
 
       - name: Export Windows build
         run: |
+          # Godot expects the output directory to exist.
+          New-Item -ItemType Directory -Force -Path build | Out-Null
           # Godot is a GUI-subsystem exe: Start-Process -Wait keeps the step
           # synchronous, otherwise PowerShell returns before the export finishes.
           $p = Start-Process -FilePath "godot\Godot_v4.7.2-stable_win64.exe" `
